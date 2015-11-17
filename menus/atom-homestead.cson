@@ -1,21 +1,17 @@
 # See https://atom.io/docs/latest/hacking-atom-package-word-count#menus for more details
-'context-menu':
-  'atom-text-editor': [
-    {
-      'label': 'Toggle atom-homestead'
-      'command': 'atom-homestead:toggle'
-    }
-  ]
 'menu': [
   {
     'label': 'Packages'
     'submenu': [
-      'label': 'atom-homestead'
+      'label': 'Homestead'
       'submenu': [
-        {
-          'label': 'Toggle'
-          'command': 'atom-homestead:toggle'
-        }
+        {'label': 'Init',    'command': 'homestead:init'}
+        {'label': 'Up',      'command': 'homestead:up'}
+        {'label': 'Suspend', 'command': 'homestead:suspend'}
+        {'label': 'Resume',  'command': 'homestead:resume'}
+        {'label': 'Halt',    'command': 'homestead:halt'}
+        {'label': 'Status',  'command': 'homestead:status'}
+        {'label': 'Destroy', 'command': 'homestead:destroy'}
       ]
     ]
   }

@@ -14,7 +14,13 @@ module.exports = AtomHomestead =
     @subscriptions = new CompositeDisposable
 
     # Register command that toggles this view
-    @subscriptions.add atom.commands.add 'atom-workspace', 'atom-homestead:toggle': => @toggle()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:init':    => @init()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:up':      => @up()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:suspend': => @suspend()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:resume':  => @resume()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:halt':    => @halt()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:status':  => @status()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:destroy': => @destroy()
 
   deactivate: ->
     @modalPanel.destroy()
@@ -24,10 +30,16 @@ module.exports = AtomHomestead =
   serialize: ->
     atomHomesteadViewState: @atomHomesteadView.serialize()
 
-  toggle: ->
-    console.log 'AtomHomestead was toggled!'
+  init: ->
 
-    if @modalPanel.isVisible()
-      @modalPanel.hide()
-    else
-      @modalPanel.show()
+  up: ->
+
+  suspend: ->
+
+  resume: ->
+
+  halt: ->
+
+  status: ->
+
+  destroy: ->
