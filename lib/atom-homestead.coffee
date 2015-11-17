@@ -31,15 +31,27 @@ module.exports = AtomHomestead =
     atomHomesteadViewState: @atomHomesteadView.serialize()
 
   init: ->
+    atom.notifications.addSuccess(message = '.init file created', {detail:'File path: <path_do_arquivo>'})
 
   up: ->
+    atom.notifications.addInfo(message = 'Creating machine...', {detail:'Homestead is powering the machine.'})
+    atom.notifications.addSuccess(message = 'Created machine', {detail:'Your machine is now created.'})
 
   suspend: ->
+    atom.notifications.addInfo(message = 'Suspending machine...', {detail:'Homestead is putting your machine to sleep...'})
+    atom.notifications.addSuccess(message = 'Machine suspended', {detail:'Your homestead is now sleeping.'})
 
   resume: ->
+    atom.notifications.addInfo(message = 'Resuming machine...', {detail:'Homestead is waking your machine...'})
+    atom.notifications.addSuccess(message = 'Machine resumed', {detail:'Your machine is now wakeful.'})
 
   halt: ->
+    atom.notifications.addInfo(message = 'Turning off the machine...', {detail:'Homestead is turning off your machine...'})
+    atom.notifications.addSuccess(message = 'Machine offline', {detail:'Your machine is now offline.'})
 
   status: ->
+    atom.notifications.addInfo(message = 'Machine status', {detail:'return of the command homestead status'})
 
   destroy: ->
+    atom.notifications.addWarning(message = 'Destroying machine...', {detail:'Homestead is destroying your machine...'})
+    atom.notifications.addSuccess(message = 'Machine destroyed', {detail:'Your machine is now destroyed.'})
