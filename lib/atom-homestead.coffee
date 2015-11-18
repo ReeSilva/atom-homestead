@@ -38,19 +38,11 @@ module.exports = AtomHomestead =
     atomHomesteadViewState: @atomHomesteadView.serialize()
 
   init: ->
-    path = atom.project.getPaths()[0]
-    @exec(['init'], cwd: path)
-    # .then (data) ->
-    #   atom.notifications.addSuccess(message = '.init file created', {detail:'${data}'})
+    atom.notifications.addSuccess(message = '.init file created', {detail:'File path: <path_do_arquivo>'})
 
   up: ->
-    path = atom.project.getPaths()[0]
-    @exec(['up'], cwd: path)
-    console.log "Começou"
-    # atom.notifications.addInfo(message = 'Creating machine...', {detail:'Homestead is powering the machine.'})
-    # .then (data) ->
-    #   console.log data
-      # atom.notifications.addSuccess(message = 'Created machine', {detail:'Your machine is now created ${data}.'})
+    atom.notifications.addInfo(message = 'Creating machine...', {detail:'Homestead is powering the machine.'})
+    atom.notifications.addSuccess(message = 'Created machine', {detail:'Your machine is now created ${data}.'})
 
   suspend: ->
     atom.notifications.addInfo(message = 'Suspending machine...', {detail:'Homestead is putting your machine to sleep...'})
@@ -61,11 +53,8 @@ module.exports = AtomHomestead =
     atom.notifications.addSuccess(message = 'Machine resumed', {detail:'Your machine is now wakeful.'})
 
   halt: ->
-    path = atom.project.getPaths()[0]
-    @exec(['halt'], cwd: path)
-    # .then (data) ->
-    #   atom.notifications.addInfo(message = 'Turning off the machine...', {detail:'Homestead is turning off your machine...'})
-    #   atom.notifications.addSuccess(message = 'Machine offline', {detail:'Your machine is now offline.'})
+    atom.notifications.addInfo(message = 'Turning off the machine...', {detail:'Homestead is turning off your machine...'})
+    atom.notifications.addSuccess(message = 'Machine offline', {detail:'Your machine is now offline.'})
 
   status: ->
     atom.notifications.addInfo(message = 'Machine status', {detail:'return of the command homestead status'})
@@ -82,9 +71,9 @@ module.exports = AtomHomestead =
           command: atom.config.get "atom-homestead.bin"
           args: args
           options: options
-          stdout: (data) -> console.log data
-          stderr: (data) -> console.log data
+          stdout: (data) -> output += data.toString()
+          stderr: (data) -> output += data.toString()
           exit: (code) -> resolve output
       catch
-        notifier.addError 'Git Plus is unable to locate the git command. Please ensure process.env.PATH can access git.'
-        reject "Couldn't find git"
+        notifier.addError 'Homestead command not found. Make sure that Homestead path is correctly defined.'
+        reject "Couldn't find Homestead"
