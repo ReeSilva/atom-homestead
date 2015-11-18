@@ -1,5 +1,5 @@
 AtomHomesteadView = require './atom-homestead-view'
-{execFile} = require('child_process')
+{BufferedProcess} = require 'atom'
 {CompositeDisposable} = require 'atom'
 
 module.exports = AtomHomestead =
@@ -11,7 +11,7 @@ module.exports = AtomHomestead =
     bin:
       title: 'Homestead exec'
       type: 'string'
-      'default': '~/.composer/vendor/bin'
+      'default': 'homestead'
 
   activate: (state) ->
     @atomHomesteadView = new AtomHomesteadView(state.atomHomesteadViewState)
@@ -38,11 +38,17 @@ module.exports = AtomHomestead =
     atomHomesteadViewState: @atomHomesteadView.serialize()
 
   init: ->
-    atom.notifications.addSuccess(message = '.init file created', {detail:'File path: <path_do_arquivo>'})
+    @exec(['init'])
+    .then (data) ->
+      atom.notifications.addSuccess(message = '.init file created', {detail:'${data}'})
 
   up: ->
-    atom.notifications.addInfo(message = 'Creating machine...', {detail:'Homestead is powering the machine.'})
-    atom.notifications.addSuccess(message = 'Created machine', {detail:'Your machine is now created.'})
+    @exec(['up'])
+    console.log "Começou"
+    # atom.notifications.addInfo(message = 'Creating machine...', {detail:'Homestead is powering the machine.'})
+    .then (data) ->
+      console.log data
+      # atom.notifications.addSuccess(message = 'Created machine', {detail:'Your machine is now created ${data}.'})
 
   suspend: ->
     atom.notifications.addInfo(message = 'Suspending machine...', {detail:'Homestead is putting your machine to sleep...'})
@@ -63,31 +69,17 @@ module.exports = AtomHomestead =
     atom.notifications.addWarning(message = 'Destroying machine...', {detail:'Homestead is destroying your machine...'})
     atom.notifications.addSuccess(message = 'Machine destroyed', {detail:'Your machine is now destroyed.'})
 
-  exec: (command) ->
-    bin = atom.config.get('atom-homestead.bin')
-    cwd = atom.project.getPaths()[0]
-
-    args = [command]
-
-    for name of params
-      args.push(`--${name} ${params[name]}`)
-
-    return new Promise((resolve, reject) => {
-      execFile(bin, args, {cwd}, (err, stdout, stderr) => {
-        if (err) {
-          err.stdout = stdout;
-          err.stderr = stderr;
-          return reject(err);
-        }
-
-        resolve({stdout, stderr});
-      });
-    }).then(({stdout}) => {
-      atom.notifications.addInfo(`Vagrant ${command}`, {
-        detail: stdout
-      });
-    }).catch((e) => {
-        atom.notifications.addError(`Vagrant ${command}`, {
-        detail: e.stderr
-        });
-      });
+  exec: (args, options={}) ->
+    new Promise (resolve, reject) ->
+      output = ''
+      try
+        new BufferedProcess
+          command: 'homestead'
+          args: args
+          options: options
+          stdout: (data) -> output += data.toString()
+          stderr: (data) -> reject data.toString()
+          exit: (code) -> resolve output
+      catch
+        notifier.addError 'Git Plus is unable to locate the git command. Please ensure process.env.PATH can access git.'
+        reject "Couldn't find git"
