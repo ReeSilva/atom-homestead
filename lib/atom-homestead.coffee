@@ -38,7 +38,13 @@ module.exports = AtomHomestead =
     atomHomesteadViewState: @atomHomesteadView.serialize()
 
   init: ->
-    atom.notifications.addSuccess(message = '.init file created', {detail:'File path: <path_do_arquivo>'})
+    path = atom.project.getPaths()[0]
+    @exec(['init'], cwd: path)
+    .then (data) ->
+      if data.indexOf("InvalidArgumentException") > -1
+        atom.notifications.addWarning(message = 'Homestead already created', {detail:"#{data}"})
+      else
+        atom.notifications.addSuccess(message = 'Homestead created', {detail:"#{data}"})
 
   up: ->
     atom.notifications.addInfo(message = 'Creating machine...', {detail:'Homestead is powering the machine.'})
