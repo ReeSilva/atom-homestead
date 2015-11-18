@@ -1,10 +1,17 @@
 AtomHomesteadView = require './atom-homestead-view'
+{BufferedProcess} = require 'atom'
 {CompositeDisposable} = require 'atom'
 
 module.exports = AtomHomestead =
   atomHomesteadView: null
   modalPanel: null
   subscriptions: null
+
+  config:
+    bin:
+      title: 'Homestead exec'
+      type: 'string'
+      'default': 'homestead'
 
   activate: (state) ->
     @atomHomesteadView = new AtomHomesteadView(state.atomHomesteadViewState)
@@ -35,7 +42,7 @@ module.exports = AtomHomestead =
 
   up: ->
     atom.notifications.addInfo(message = 'Creating machine...', {detail:'Homestead is powering the machine.'})
-    atom.notifications.addSuccess(message = 'Created machine', {detail:'Your machine is now created.'})
+    atom.notifications.addSuccess(message = 'Created machine', {detail:'Your machine is now created ${data}.'})
 
   suspend: ->
     atom.notifications.addInfo(message = 'Suspending machine...', {detail:'Homestead is putting your machine to sleep...'})
@@ -55,3 +62,18 @@ module.exports = AtomHomestead =
   destroy: ->
     atom.notifications.addWarning(message = 'Destroying machine...', {detail:'Homestead is destroying your machine...'})
     atom.notifications.addSuccess(message = 'Machine destroyed', {detail:'Your machine is now destroyed.'})
+
+  exec: (args, options={}) ->
+    new Promise (resolve, reject) ->
+      output = ''
+      try
+        new BufferedProcess
+          command: atom.config.get "atom-homestead.bin"
+          args: args
+          options: options
+          stdout: (data) -> output += data.toString()
+          stderr: (data) -> output += data.toString()
+          exit: (code) -> resolve output
+      catch
+        notifier.addError 'Homestead command not found. Make sure that Homestead path is correctly defined.'
+        reject "Couldn't find Homestead"
