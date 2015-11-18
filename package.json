@@ -1,15 +1,13 @@
 {
   "name": "atom-homestead",
   "main": "./lib/atom-homestead",
-  "version": "v0.1.0",
+  "version": "0.2.0",
   "description": "Atom Homestead is a plugin that allows you to control your Homestead from Atom.",
-  "keywords": [
-  ],
+  "keywords": [],
   "repository": "https://github.com/reesilva/atom-homestead",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
