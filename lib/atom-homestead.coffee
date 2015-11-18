@@ -1,10 +1,17 @@
 AtomHomesteadView = require './atom-homestead-view'
+{execFile} = require('child_process')
 {CompositeDisposable} = require 'atom'
 
 module.exports = AtomHomestead =
   atomHomesteadView: null
   modalPanel: null
   subscriptions: null
+
+  config:
+    bin:
+      title: 'Homestead exec'
+      type: 'string'
+      'default': '~/.composer/vendor/bin'
 
   activate: (state) ->
     @atomHomesteadView = new AtomHomesteadView(state.atomHomesteadViewState)
@@ -55,3 +62,32 @@ module.exports = AtomHomestead =
   destroy: ->
     atom.notifications.addWarning(message = 'Destroying machine...', {detail:'Homestead is destroying your machine...'})
     atom.notifications.addSuccess(message = 'Machine destroyed', {detail:'Your machine is now destroyed.'})
+
+  exec: (command) ->
+    bin = atom.config.get('atom-homestead.bin')
+    cwd = atom.project.getPaths()[0]
+
+    args = [command]
+
+    for name of params
+      args.push(`--${name} ${params[name]}`)
+
+    return new Promise((resolve, reject) => {
+      execFile(bin, args, {cwd}, (err, stdout, stderr) => {
+        if (err) {
+          err.stdout = stdout;
+          err.stderr = stderr;
+          return reject(err);
+        }
+
+        resolve({stdout, stderr});
+      });
+    }).then(({stdout}) => {
+      atom.notifications.addInfo(`Vagrant ${command}`, {
+        detail: stdout
+      });
+    }).catch((e) => {
+        atom.notifications.addError(`Vagrant ${command}`, {
+        detail: e.stderr
+        });
+      });
