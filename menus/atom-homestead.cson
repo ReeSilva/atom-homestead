@@ -1,0 +1,18 @@
+# See https://atom.io/docs/latest/hacking-atom-package-word-count#menus for more details
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'Homestead'
+      'submenu': [
+        {'label': 'Init',    'command': 'homestead:init'}
+        {'label': 'Up',      'command': 'homestead:up'}
+        {'label': 'Suspend', 'command': 'homestead:suspend'}
+        {'label': 'Resume',  'command': 'homestead:resume'}
+        {'label': 'Halt',    'command': 'homestead:halt'}
+        {'label': 'Status',  'command': 'homestead:status'}
+        {'label': 'Destroy', 'command': 'homestead:destroy'}
+      ]
+    ]
+  }
+]
