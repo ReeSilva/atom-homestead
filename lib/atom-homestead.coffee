@@ -63,7 +63,15 @@ module.exports = AtomHomestead =
 
   resume: ->
     atom.notifications.addInfo(message = 'Resuming machine...', {detail:'Homestead is waking your machine...'})
-    atom.notifications.addSuccess(message = 'Machine resumed', {detail:'Your machine is now wakeful.'})
+    @exec(['resume'], cwd: @path)
+    .then (data) ->
+      console.log data
+      if data.indexOf("Machine booted and ready!") > -1
+        atom.notifications.addSuccess(message = 'Machine resumed', {detail: 'Your machine is now wakeful.'})
+      else if data.indexOf("'poweroff' state") > -1
+        atom.notifications.addWarning(message = 'Machine offline', {detail: 'Your machine is offline. Use homestead:up instead ;)'})
+      else
+        atom.notifications.addInfo(message = 'Machine already running', {detail: 'Your machine is already running. Nothing to do here :)'})
 
   halt: ->
     atom.notifications.addInfo(message = 'Turning off the machine...', {detail:'Homestead is turning off your machine...'})
