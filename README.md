@@ -6,7 +6,7 @@ Atom Homestead is a plugin that allows you to control your Homestead from Atom.
 
 If u work with Laravel and use Homestead as your dev environment, you can use this plugin to control your Homestead from Atom. From Init to Destroy, you can do anything from Atom.
 
-## Dependências
+## Dependencies
 [Atom][f36ad180]
 
   [f36ad180]: https://atom.io/ "Atom homepage"
@@ -23,5 +23,5 @@ If u work with Laravel and use Homestead as your dev environment, you can use th
 5. Push it!
 6. Create a pull request :D
 
-## Créditos
-* [Renato PSDB](https://reesilva.com)
+## Credits
+* [ReeSilva](https://reesilva.com)
