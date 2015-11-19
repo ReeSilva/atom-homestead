@@ -1,6 +1,7 @@
 AtomHomesteadView = require './atom-homestead-view'
 {BufferedProcess} = require 'atom'
 {CompositeDisposable} = require 'atom'
+{spawn} = require 'child_process'
 
 module.exports = AtomHomestead =
   atomHomesteadView: null
@@ -24,9 +25,9 @@ module.exports = AtomHomestead =
 
     # Register command that toggles this view
     @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:init':    => @init()
-    # @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:up':      => @up()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:up':      => @up()
     @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:suspend': => @suspend()
-    # @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:resume':  => @resume()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:resume':  => @resume()
     @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:halt':    => @halt()
     @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:status':  => @status()
     @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:destroy': => @destroy()
@@ -48,8 +49,14 @@ module.exports = AtomHomestead =
         atom.notifications.addSuccess(message = 'Homestead created', {detail:"#{data}"})
 
   up: ->
-    atom.notifications.addInfo(message = 'Creating machine...', {detail:'Homestead is powering the machine.'})
-    atom.notifications.addSuccess(message = 'Created machine', {detail:'Your machine is now created ${data}.'})
+    atom.notifications.addInfo(message = 'Turning on machine...', {detail:'Homestead is powering the machine.'})
+    @exec(['up'], cwd: @path)
+    .then (data) ->
+      if data.indexOf("VirtualBox VM is already running") > -1
+        atom.notifications.addInfo(message = 'Machine already online', {detail:'Your machine is already online. Nothing to do here :)'})
+      else
+        atom.notifications.addSuccess(message = 'Machine online', {detail:'Your machine is now online.'})
+
 
   suspend: ->
     atom.notifications.addInfo(message = 'Suspending machine...', {detail:'Homestead is putting your machine to sleep...'})
@@ -110,9 +117,14 @@ module.exports = AtomHomestead =
           command: atom.config.get "atom-homestead.bin"
           args: args
           options: options
-          stdout: (data) -> output += data.toString()
-          stderr: (data) -> output += data.toString()
-          exit: (code) -> resolve output
+          stdout: (data) ->
+            console.log 'stdout: ' + data
+            output += data.toString()
+          stderr: (data) ->
+            console.log 'stderr: ' + data
+            output += data.toString()
+          exit: (code) ->
+            resolve output
       catch
         atom.notifications.addError(message = 'Homestead not found', {detail: 'Homestead command not found. Make sure that Homestead path is correctly defined.'})
         reject "Couldn't find Homestead"

@@ -15,6 +15,9 @@ If u work with Laravel and use Homestead as your dev environment, you can use th
 
   [fa522fd0]: http://laravel.com/docs/5.1/homestead "Homestead page"
 
+## Bugs
+* For some reason that I can't explain, commands **UP** and **RESUME** only works with VirtualBox opened.
+
 ## Contribute
 1. Pick an issue or create one
 2. Fork it!
