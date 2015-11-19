@@ -24,9 +24,9 @@ module.exports = AtomHomestead =
 
     # Register command that toggles this view
     @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:init':    => @init()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:up':      => @up()
+    # @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:up':      => @up()
     @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:suspend': => @suspend()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:resume':  => @resume()
+    # @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:resume':  => @resume()
     @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:halt':    => @halt()
     @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:status':  => @status()
     @subscriptions.add atom.commands.add 'atom-workspace', 'homestead:destroy': => @destroy()
