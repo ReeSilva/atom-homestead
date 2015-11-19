@@ -69,7 +69,15 @@ module.exports = AtomHomestead =
         atom.notifications.addInfo(message= 'Machine already offline', {detail: 'Your machine is already offline, nothing to do here :)'})
 
   status: ->
-    atom.notifications.addInfo(message = 'Machine status', {detail:'return of the command homestead status'})
+    atom.notifications.addInfo(message = "Checking the status of your machine...", {detail: "Wait a second..."})
+    @exec(['status'], cwd: @path)
+    .then (data) ->
+      if data.indexOf('poweroff') > -1
+        atom.notifications.addWarning(message = 'Machine offline', {detail:"#{data}"})
+      else if data.indexOf('running') > -1
+        atom.notifications.addSuccess(message = 'Machine online', {detail:"#{data}"})
+      else
+        atom.notifications.addInfo(message = 'Machine suspended', {detail:"#{data}"})
 
   destroy: ->
     atom.notifications.addWarning(message = 'Destroying machine...', {detail:'Homestead is destroying your machine...'})
