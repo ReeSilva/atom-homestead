@@ -18,6 +18,12 @@ If u work with Laravel and use Homestead as your dev environment, you can use th
 ## Bugs
 * For some reason that I can't explain, commands **UP** and **RESUME** only works with VirtualBox opened.
 
+## Configure
+After install you need to configure the command to Homestead, on the settings of plugin.
+![Homestead path config](http://s14.postimg.org/gcawn4x41/Captura_de_tela_de_2015_11_19_14_12_20.png)
+
+Usually you already have the composer binary folders on your path. But, if you don't have you can insert the path to the homestead binary here.
+
 ## Contribute
 1. Pick an issue or create one
 2. Fork it!
