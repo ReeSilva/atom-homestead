@@ -53,7 +53,13 @@ module.exports = AtomHomestead =
 
   suspend: ->
     atom.notifications.addInfo(message = 'Suspending machine...', {detail:'Homestead is putting your machine to sleep...'})
-    atom.notifications.addSuccess(message = 'Machine suspended', {detail:'Your homestead is now sleeping.'})
+    @exec(['suspend'], cwd: @path)
+    .then (data) ->
+      console.log data
+      if data.indexOf("suspending execution") > -1
+        atom.notifications.addSuccess(message = 'Machine suspended', {detail:'Your homestead is now sleeping.'})
+      else
+        atom.notifications.addInfo(message = 'Machine already suspended', {detail: 'Your machine is already sleeping. Nothing to do here :)'})
 
   resume: ->
     atom.notifications.addInfo(message = 'Resuming machine...', {detail:'Homestead is waking your machine...'})
