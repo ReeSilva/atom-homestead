@@ -6,6 +6,7 @@ module.exports = AtomHomestead =
   atomHomesteadView: null
   modalPanel: null
   subscriptions: null
+  path: null
 
   config:
     bin:
@@ -16,6 +17,7 @@ module.exports = AtomHomestead =
   activate: (state) ->
     @atomHomesteadView = new AtomHomesteadView(state.atomHomesteadViewState)
     @modalPanel = atom.workspace.addModalPanel(item: @atomHomesteadView.getElement(), visible: false)
+    @path = atom.project.getPaths()[0]
 
     # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
     @subscriptions = new CompositeDisposable
@@ -38,8 +40,7 @@ module.exports = AtomHomestead =
     atomHomesteadViewState: @atomHomesteadView.serialize()
 
   init: ->
-    path = atom.project.getPaths()[0]
-    @exec(['init'], cwd: path)
+    @exec(['init'], cwd: @path)
     .then (data) ->
       if data.indexOf("InvalidArgumentException") > -1
         atom.notifications.addWarning(message = 'Homestead already created', {detail:"#{data}"})
@@ -60,7 +61,12 @@ module.exports = AtomHomestead =
 
   halt: ->
     atom.notifications.addInfo(message = 'Turning off the machine...', {detail:'Homestead is turning off your machine...'})
-    atom.notifications.addSuccess(message = 'Machine offline', {detail:'Your machine is now offline.'})
+    @exec(['halt'], cwd: @path)
+    .then (data) ->
+      if data.indexOf("shutdown") > -1
+        atom.notifications.addSuccess(message = 'Machine offline', {detail:'Your machine is now offline.'})
+      else
+        atom.notifications.addInfo(message= 'Machine already offline', {detail: 'Your machine is already offline, nothing to do here :)'})
 
   status: ->
     atom.notifications.addInfo(message = 'Machine status', {detail:'return of the command homestead status'})
@@ -81,5 +87,5 @@ module.exports = AtomHomestead =
           stderr: (data) -> output += data.toString()
           exit: (code) -> resolve output
       catch
-        notifier.addError 'Homestead command not found. Make sure that Homestead path is correctly defined.'
+        atom.notifications.addError(message = 'Homestead not found', {detail: 'Homestead command not found. Make sure that Homestead path is correctly defined.'})
         reject "Couldn't find Homestead"
