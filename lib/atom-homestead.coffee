@@ -95,7 +95,12 @@ module.exports = AtomHomestead =
 
   destroy: ->
     atom.notifications.addWarning(message = 'Destroying machine...', {detail:'Homestead is destroying your machine...'})
-    atom.notifications.addSuccess(message = 'Machine destroyed', {detail:'Your machine is now destroyed.'})
+    @exec(['destroy'], cwd: @path)
+    .then (data) ->
+      if data.indexOf("Destroying VM") > -1
+        atom.notifications.addSuccess(message = 'Machine destroyed', {detail:'Your machine is now destroyed.'})
+      else
+        atom.notifications.addSuccess(message = 'Machine already destroyed', {detail:'Your machine already doesn\'t exist, nothing to do here :)'})
 
   exec: (args, options={}) ->
     new Promise (resolve, reject) ->
